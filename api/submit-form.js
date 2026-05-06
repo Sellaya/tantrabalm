@@ -1,33 +1,23 @@
-require('dotenv').config();
-const express = require('express');
 const nodemailer = require('nodemailer');
-const cors = require('cors');
-const path = require('path');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+export default async function handler(req, res) {
+  // Only allow POST requests
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Serve static files (HTML, CSS, JS) from the root directory
-app.use(express.static(__dirname));
-
-// Set up Nodemailer transporter using Titan Mail SMTP
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.titan.email',
-  port: process.env.SMTP_PORT || 465,
-  secure: process.env.SMTP_SECURE === 'true' || true, // true for 465, false for other ports
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
-
-// API Endpoint to handle form submissions
-app.post('/api/submit-form', async (req, res) => {
   const { formType, email, name, phone, company, website, bizType, message } = req.body;
+
+  // Create Nodemailer transporter
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.titan.email',
+    port: process.env.SMTP_PORT || 465,
+    secure: process.env.SMTP_SECURE === 'true' || true,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
 
   try {
     let internalSubject = '';
@@ -56,10 +46,10 @@ app.post('/api/submit-form', async (req, res) => {
       return res.status(400).json({ error: 'Invalid form type' });
     }
 
-    // 1. Send the email to info@tantrabalm.com (the owner)
+    // 1. Send the email to info@tantrabalm.com
     await transporter.sendMail({
       from: `"Tantra Balm System" <${process.env.SMTP_USER}>`,
-      to: process.env.SMTP_USER, // sends to info@tantrabalm.com
+      to: process.env.SMTP_USER,
       subject: internalSubject,
       html: internalHtml,
     });
@@ -104,9 +94,4 @@ app.post('/api/submit-form', async (req, res) => {
     console.error('Error sending email:', error);
     res.status(500).json({ success: false, error: 'Failed to send emails' });
   }
-});
-
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+}
