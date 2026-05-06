@@ -37,19 +37,53 @@ window.addEventListener('scroll', () => {
 // Smooth scroll for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
-    e.preventDefault();
     const targetId = a.getAttribute('href');
-    if(targetId === '#') return;
+    if(targetId === '#') {
+      e.preventDefault();
+      return;
+    }
     
-    const target = document.querySelector(targetId);
-    if (target) {
-      const navHeight = nav.offsetHeight;
-      const targetPosition = target.getBoundingClientRect().top + window.scrollY;
-      
-      window.scrollTo({
-        top: targetPosition - navHeight,
-        behavior: 'smooth'
-      });
+    // Only smooth scroll if the link is an anchor on the same page
+    if(targetId.startsWith('#')) {
+      e.preventDefault();
+      const target = document.querySelector(targetId);
+      if (target) {
+        const navHeight = nav.offsetHeight;
+        const targetPosition = target.getBoundingClientRect().top + window.scrollY;
+        
+        window.scrollTo({
+          top: targetPosition - navHeight,
+          behavior: 'smooth'
+        });
+      }
     }
   });
 });
+
+// Form Handling
+const handleFormSubmit = (formId, buttonId) => {
+  const form = document.getElementById(formId);
+  const button = document.getElementById(buttonId);
+  
+  if (form && button) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      // Save original text
+      const originalText = button.innerText;
+      
+      // Update button state
+      button.innerText = 'SUBMITTING...';
+      button.style.pointerEvents = 'none';
+      button.style.opacity = '0.8';
+      
+      // Simulate network request
+      setTimeout(() => {
+        window.location.href = 'thank-you.html';
+      }, 1200);
+    });
+  }
+};
+
+handleFormSubmit('notify-form', 'notify-submit');
+handleFormSubmit('distributor-form', 'distributor-submit');

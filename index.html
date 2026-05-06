@@ -187,10 +187,10 @@
         <p>Authorized retailers coming soon</p>
       </div>
       <p class="reveal" style="font-family: var(--serif); font-size: 1rem; color: var(--text-muted); margin-bottom: 1rem;">Don't see a retailer near you? Get notified when we expand.</p>
-      <div class="notify-form reveal">
-        <input type="email" placeholder="Enter your email">
-        <button type="button">Notify Me</button>
-      </div>
+      <form id="notify-form" class="notify-form reveal">
+        <input type="email" id="notify-email" required placeholder="Enter your email">
+        <button type="submit" id="notify-submit">Notify Me</button>
+      </form>
     </div>
   </div>
 </section>
@@ -226,36 +226,36 @@
           </div>
         </div>
       </div>
-      <div class="dist-form reveal-scale">
+      <form id="distributor-form" class="dist-form reveal-scale">
         <h3>Distributor Inquiry</h3>
         <p>Complete the form and our partnerships team will respond within 48 hours.</p>
         <div class="form-row">
           <div class="form-group">
-            <label>Business Name</label>
-            <input type="text" placeholder="Your company">
+            <label for="biz-name">Business Name</label>
+            <input type="text" id="biz-name" required placeholder="Your company">
           </div>
           <div class="form-group">
-            <label>Contact Name</label>
-            <input type="text" placeholder="Full name">
+            <label for="contact-name">Contact Name</label>
+            <input type="text" id="contact-name" required placeholder="Full name">
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Email</label>
-            <input type="email" placeholder="you@company.com">
+            <label for="contact-email">Email</label>
+            <input type="email" id="contact-email" required placeholder="you@company.com">
           </div>
           <div class="form-group">
-            <label>Phone</label>
-            <input type="tel" placeholder="+1 (555) 000-0000">
+            <label for="contact-phone">Phone</label>
+            <input type="tel" id="contact-phone" placeholder="+1 (555) 000-0000">
           </div>
         </div>
         <div class="form-group">
-          <label>Website</label>
-          <input type="url" placeholder="https://yourstore.com">
+          <label for="biz-website">Website</label>
+          <input type="url" id="biz-website" placeholder="https://yourstore.com">
         </div>
         <div class="form-group">
-          <label>Business Type</label>
-          <select>
+          <label for="biz-type">Business Type</label>
+          <select id="biz-type" required>
             <option value="" disabled selected>Select your business type</option>
             <option>Online Retailer</option>
             <option>Brick & Mortar</option>
@@ -266,11 +266,11 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Message</label>
-          <textarea rows="3" placeholder="Tell us about your business and interest in Tantra Balm..."></textarea>
+          <label for="inquiry-message">Message</label>
+          <textarea id="inquiry-message" rows="3" required placeholder="Tell us about your business and interest in Tantra Balm..."></textarea>
         </div>
-        <button class="form-submit" type="button">Submit Inquiry</button>
-      </div>
+        <button class="form-submit" id="distributor-submit" type="submit">Submit Inquiry</button>
+      </form>
     </div>
   </div>
 </section>
