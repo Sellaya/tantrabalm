@@ -16,8 +16,6 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('visible');
-      // Optional: stop observing after it's visible once
-      // observer.unobserve(entry.target); 
     }
   });
 }, observerOptions);
@@ -60,30 +58,64 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-// Form Handling
-const handleFormSubmit = (formId, buttonId) => {
+// Form Handling with Backend Integration
+const setupForm = (formId, type) => {
   const form = document.getElementById(formId);
-  const button = document.getElementById(buttonId);
   
-  if (form && button) {
-    form.addEventListener('submit', (e) => {
+  if (form) {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      // Save original text
-      const originalText = button.innerText;
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerText;
       
       // Update button state
-      button.innerText = 'SUBMITTING...';
-      button.style.pointerEvents = 'none';
-      button.style.opacity = '0.8';
+      submitBtn.innerText = 'SUBMITTING...';
+      submitBtn.style.pointerEvents = 'none';
+      submitBtn.style.opacity = '0.8';
       
-      // Simulate network request
-      setTimeout(() => {
-        window.location.href = 'thank-you.html';
-      }, 1200);
+      // Gather Data
+      let payload = { formType: type };
+      
+      if (type === 'notify') {
+        payload.email = document.getElementById('notify-email').value;
+      } else if (type === 'distributor') {
+        payload.company = document.getElementById('biz-name').value;
+        payload.name = document.getElementById('contact-name').value;
+        payload.email = document.getElementById('contact-email').value;
+        payload.phone = document.getElementById('contact-phone').value;
+        payload.website = document.getElementById('biz-website').value;
+        payload.bizType = document.getElementById('biz-type').value;
+        payload.message = document.getElementById('inquiry-message').value;
+      }
+
+      try {
+        const response = await fetch('/api/submit-form', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          window.location.href = 'thank-you.html';
+        } else {
+          alert('Something went wrong. Please try again.');
+          submitBtn.innerText = originalText;
+          submitBtn.style.pointerEvents = 'auto';
+          submitBtn.style.opacity = '1';
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        alert('An error occurred. Please check your connection and try again.');
+        submitBtn.innerText = originalText;
+        submitBtn.style.pointerEvents = 'auto';
+        submitBtn.style.opacity = '1';
+      }
     });
   }
 };
 
-handleFormSubmit('notify-form', 'notify-submit');
-handleFormSubmit('distributor-form', 'distributor-submit');
+setupForm('notify-form', 'notify');
+setupForm('distributor-form', 'distributor');
